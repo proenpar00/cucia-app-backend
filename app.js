@@ -25,7 +25,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:3000', // Cambia esto si tu aplicación corre en otro puerto
+                url: 'https://cucia-service.onrender.com', // Cambia esto si tu aplicación corre en otro puerto
             },
         ],
     },
