@@ -6,6 +6,7 @@ const { exec } = require('child_process');
 const Image = require('../models/img');
 const router = express.Router();
 
+
 // Configuración de Multer para la carga de imágenes
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -30,6 +31,49 @@ const upload = multer({
   },
 });
 
+/**
+ * @swagger
+ * /images:
+ *   post:
+ *     summary: Sube una imagen y devuelve la imagen procesada
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - image
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *               model:
+ *                 type: string
+ *                 description: Nombre del modelo a usar (opcional)
+ *     responses:
+ *       200:
+ *         description: Imagen procesada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 base64:
+ *                   type: string
+ *                 detections:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       400:
+ *         description: No se subió imagen
+ *       500:
+ *         description: Error al procesar imagen
+ */
 /* POST image */
 router.post('/', upload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).send('No se subió imagen');
@@ -83,6 +127,39 @@ router.post('/', upload.single('image'), async (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /images/{id}:
+ *   get:
+ *     summary: Obtener imagen procesada por ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la imagen
+ *     responses:
+ *       200:
+ *         description: Imagen encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 base64:
+ *                   type: string
+ *                 detections:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       404:
+ *         description: Imagen no encontrada
+ *       500:
+ *         description: Error del servidor
+ */
 /* GET image by ID */
 router.get('/:id', async function (req, res) {
   const id = req.params.id;
