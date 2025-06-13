@@ -21,7 +21,7 @@ const swaggerOptions = {
         info: {
             title: 'API de Gestión de Imágenes',
             version: '1.0.0',
-            description: 'API para subir y gestionar imágenes procesadas con YOLOv5.',
+            description: 'API para subir y gestionar imágenes procesadas con YOLO.',
         },
         servers: [
             {
@@ -45,7 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/v1/image', imageRouter);
 
-//setup connection to mongo
+// Setup connection to mongo
 const mongoose = require('mongoose');
 const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost/test';
 console.log("Conectando a la base de datos: %s", DB_URL);
@@ -53,7 +53,7 @@ console.log("Conectando a la base de datos: %s", DB_URL);
 mongoose.connect(DB_URL);
 const db = mongoose.connection;
 
-//recover from errors
+// Recover from errors
 db.on('error', console.error.bind(console, 'db connection error'));
 
 // Crear la carpeta uploads si no existe
@@ -62,5 +62,11 @@ const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)){
     fs.mkdirSync(uploadsDir);
 }
+
+// **IMPORTANTE**: Levantar el servidor escuchando en el puerto configurado
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Servidor escuchando en el puerto ${port}`);
+});
 
 module.exports = app;
