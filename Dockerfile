@@ -2,6 +2,7 @@ FROM node:21
 
 WORKDIR /app
 
+COPY .env .  
 COPY package.json .
 COPY package-lock.json .
 
