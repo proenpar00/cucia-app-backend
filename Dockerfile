@@ -1,28 +1,32 @@
-# Usa imagen base con Node y Alpine (liviana)
+# Imagen base con Node y Alpine
 FROM node:21-alpine
 
-# Instala python3, pip y git (necesario para torch hub)
-RUN apk add --no-cache python3 py3-pip git
+# Instalar Python, pip, virtualenv y git (para torch hub)
+RUN apk add --no-cache python3 py3-pip py3-virtualenv git
 
-# Establece directorio de trabajo
+# Establecer directorio de trabajo
 WORKDIR /app
 
-# Copia package.json y package-lock.json e instala dependencias npm
-COPY package.json package-lock.json ./
+# Crear entorno virtual para Python y agregarlo al PATH
+RUN python3 -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
+# Copiar e instalar dependencias Node.js
+COPY package*.json ./
 RUN npm ci
 
-# Copia el requirements.txt y lo instala con pip
+# Copiar e instalar dependencias Python
 COPY requirements.txt ./
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia el resto de archivos (incluye process_image.py y weights)
+# Copiar el resto del proyecto
 COPY . .
 
-# Crea carpeta uploads si no existe (por si acaso)
+# Crear carpeta de subidas si no existe
 RUN mkdir -p uploads
 
-# Exponer puerto donde escucha tu app Express
+# Exponer el puerto que usa Express (Render lo detecta)
 EXPOSE 3000
 
-# Comando para iniciar la app
+# Comando de inicio
 CMD ["node", "app.js"]
