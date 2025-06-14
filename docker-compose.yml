@@ -14,7 +14,6 @@ services:
       - "3000:3000"
     environment:
       - MONGODB_URI=${MONGODB_URI}
-      - PORT=3000
     depends_on:
       - frontend
 
