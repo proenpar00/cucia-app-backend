@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use('/', indexRoutes);
-app.use('/images', imageRoutes);
+app.use('/api/v1/image', imageRoutes);
 
 // Conexión a MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
