@@ -2,7 +2,7 @@
   "name": "appcucia-backend",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./www"
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
