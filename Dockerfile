@@ -15,12 +15,14 @@ ENV PATH="/venv/bin:$PATH"
 COPY package*.json ./
 RUN npm ci
 
-# Instalar dependencias Python
-COPY requirements.txt ./
-RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt
+# Copiar carpeta scripts con process_image.py y requirements.txt
+COPY scripts ./scripts
 
-# Copiar todo el código
+# Instalar dependencias Python desde scripts/requirements.txt
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r ./scripts/requirements.txt
+
+# Copiar el resto del código de la app
 COPY . .
 
 # Exponer puerto para Render

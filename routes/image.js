@@ -85,8 +85,7 @@ router.post('/', upload.single('image'), async (req, res) => {
   const baseName = path.basename(imagePath, ext);
   const annotatedImagePath = path.join(imageDir, `${baseName}_output${ext}`);
 
- const scriptPath = path.resolve(__dirname, '../scripts/process_image.py');
- exec(`python3 "${scriptPath}" "${imagePath}" "${model}"`, async (err, stdout, stderr) => {
+ exec(`python3 ./scripts/process_image.py "${imagePath}" "${model}"`, async (err, stdout, stderr) => {
    if (err) {
       console.error('Error en script:', err);
       console.error('stderr:', stderr);
