@@ -5,7 +5,6 @@ const path = require('path');
 const { exec } = require('child_process');
 const Image = require('../models/img');
 const router = express.Router();
-const path = require('path');
 
 // Configuración de Multer para la carga de imágenes
 const storage = multer.diskStorage({
