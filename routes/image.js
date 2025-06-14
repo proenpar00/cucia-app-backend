@@ -5,7 +5,7 @@ const path = require('path');
 const { exec } = require('child_process');
 const Image = require('../models/img');
 const router = express.Router();
-
+const path = require('path');
 
 // Configuración de Multer para la carga de imágenes
 const storage = multer.diskStorage({
@@ -85,8 +85,9 @@ router.post('/', upload.single('image'), async (req, res) => {
   const baseName = path.basename(imagePath, ext);
   const annotatedImagePath = path.join(imageDir, `${baseName}_output${ext}`);
 
-  exec(`python3 ../process_image.py "${imagePath}" "${model}"`, async (err, stdout, stderr) => {
-    if (err) {
+ const scriptPath = path.resolve(__dirname, '../scripts/process_image.py');
+ exec(`python3 "${scriptPath}" "${imagePath}" "${model}"`, async (err, stdout, stderr) => {
+   if (err) {
       console.error('Error en script:', err);
       console.error('stderr:', stderr);
       // Elimina archivo original si hay error

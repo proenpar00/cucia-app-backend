@@ -54,7 +54,7 @@ def run_inference_and_annotate(model_type, image_path):
 
             # Dibujar rectángulo y texto
             draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
-            draw.text((x1, y1 - 10), f"{CLASSES[cls_id]} {conf_score}", fill="red", font=font)
+            draw.text((x1, y1 - 10), f"{CLASSES[cls_id]} {conf_score}", fill="black", font=font)
 
     elif model_type in ['yolov8', 'yolov12']:
         results = model.predict(source=image_path, imgsz=1024)
@@ -67,7 +67,7 @@ def run_inference_and_annotate(model_type, image_path):
                 detections.append({"class": CLASSES[cls_id], "confidence": conf_score})
 
                 draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
-                draw.text((x1, y1 - 10), f"{CLASSES[cls_id]} {conf_score}", fill="red", font=font)
+                draw.text((x1, y1 - 10), f"{CLASSES[cls_id]} {conf_score}", fill="black", font=font)
 
     else:  # Faster R-CNN y RetinaNet
         from torchvision import transforms
@@ -94,7 +94,7 @@ def run_inference_and_annotate(model_type, image_path):
             box = output['boxes'][idx].tolist()
             x1, y1, x2, y2 = map(int, box)
             draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
-            draw.text((x1, y1 - 10), f"{CLASSES[cls_idx]} {round(score, 2)}", fill="red", font=font)
+            draw.text((x1, y1 - 10), f"{CLASSES[cls_idx]} {round(score, 2)}", fill="black", font=font)
 
     # Guardar imagen anotada con sufijo _output antes de la extensión
     output_path = image_path.parent / f"{image_path.stem}_output{image_path.suffix}"
