@@ -18,6 +18,9 @@ RUN npm ci
 # Copiar carpeta scripts con process_image.py y requirements.txt
 COPY scripts ./scripts
 
+# Dar permisos ejecutables al script
+RUN chmod +x ./scripts/process_image.py
+
 # Instalar dependencias Python desde scripts/requirements.txt
 RUN pip install --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r ./scripts/requirements.txt
