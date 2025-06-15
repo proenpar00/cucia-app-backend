@@ -6,6 +6,7 @@ const { exec } = require('child_process');
 const Image = require('../models/img');
 const router = express.Router();
 
+
 // Configuración de Multer para la carga de imágenes
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -84,8 +85,8 @@ router.post('/', upload.single('image'), async (req, res) => {
   const baseName = path.basename(imagePath, ext);
   const annotatedImagePath = path.join(imageDir, `${baseName}_output${ext}`);
 
- exec(`python3 ./scripts/process_image.py "${imagePath}" "${model}"`, async (err, stdout, stderr) => {
-   if (err) {
+  exec(`python3 process_image.py "${imagePath}" "${model}"`, async (err, stdout, stderr) => {
+    if (err) {
       console.error('Error en script:', err);
       console.error('stderr:', stderr);
       // Elimina archivo original si hay error
@@ -167,159 +168,17 @@ router.get('/:id', async function (req, res) {
     const foundImg = await Image.findOne({ id });
 
     if (foundImg) {
-      // Imagen en la base de datos, devolvemos normalmente
       res.status(200).json({
         id: foundImg.id,
         base64: foundImg.base64,
         detections: foundImg.detections
       });
     } else {
-      const fallbackPath = path.resolve('uploads', '3_png.rf.139baea966997f3a2b96de25b21dc4c7.jpg');
-      if (fs.existsSync(fallbackPath)) {
-        const base64 = fs.readFileSync(fallbackPath, 'base64');
-        res.status(200).json({
-          id: Number(id),
-          base64,
-          detections: [
-            {"class":"NILM",
-              "confidence": 0.87
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.85
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.82
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.81
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.75
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.72
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.67
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.65
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.35
-            },
-            {
-              "class":"ASC-H",
-              "confidence": 0.84
-            },
-            {
-              "class":"ASC-H",
-              "confidence": 0.64
-            },
-            {
-              "class":"ASC-US",
-              "confidence": 0.64
-            },
-            {
-              "class":"ASC-US",
-              "confidence": 0.30
-            },
-            {
-              "class":"LSIL",
-              "confidence": 0.75
-            },
-            {
-              "class":"LSIL",
-              "confidence": 0.64
-            }
-          ]
-        });
-      } else {
-        res.status(404).send('Imagen no encontrada ni fallback disponible');
-      }
+      res.status(404).send('Imagen no encontrada');
     }
   } catch (error) {
     console.error(error);
-    // Si ocurre cualquier error, enviamos la imagen fallback también
-    const fallbackPath = path.resolve('uploads', '3_png.rf.139baea966997f3a2b96de25b21dc4c7.jpg');
-    if (fs.existsSync(fallbackPath)) {
-      const base64 = fs.readFileSync(fallbackPath, 'base64');
-      res.status(200).json({
-        id: Number(id),
-        base64,
-        detections: [
-            {"class":"NILM",
-              "confidence": 0.87
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.85
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.82
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.81
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.75
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.72
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.67
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.65
-            },
-            {
-              "class":"NILM",
-              "confidence": 0.35
-            },
-            {
-              "class":"ASC-H",
-              "confidence": 0.84
-            },
-            {
-              "class":"ASC-H",
-              "confidence": 0.64
-            },
-            {
-              "class":"ASC-US",
-              "confidence": 0.64
-            },
-            {
-              "class":"ASC-US",
-              "confidence": 0.30
-            },
-            {
-              "class":"LSIL",
-              "confidence": 0.75
-            },
-            {
-              "class":"LSIL",
-              "confidence": 0.64
-            }
-          ]
-      });
-    } else {
-      res.sendStatus(500);
-    }
+    res.sendStatus(500);
   }
 });
 
